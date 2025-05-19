@@ -6,8 +6,8 @@ device = torch.device("cpu")
 print(f"Using device: {device}")  # Menampilkan device yang digunakan
 
 # Load YOLOv5 model (pastikan path model benar)
-model = torch.hub.load('/home/wgg/yolov5', 'custom', 
-                       path='/home/wgg/ROSTU_SAS/src/krsbi_2025/scripts/KRSBI_50.pt', 
+model = torch.hub.load('/home/cd/yolov5', 'custom', 
+                       path='/home/cd/CapstoneDesign2025/PPT5_15BEST.pt', 
                        source='local', force_reload=True)
 
 # Pindahkan model ke CPU
@@ -57,6 +57,65 @@ while cap.isOpened():
     cv2.imshow('YOLOv5-Lite Live Camera (CPU)', frame_output)
 
     # Tekan 'q' untuk keluar
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+import torch
+import cv2
+import time
+
+# Gunakan CPU
+device = torch.device("cpu")
+print(f"Using device: {device}")
+
+# Load YOLOv5 model yang ringan (misalnya: YOLOv5n atau YOLOv5s)
+model = torch.hub.load('/home/cd/yolov5', 'custom',
+                       path='/home/cd/CapstoneDesign2025/PPT5_15BEST.pt',
+                       source='local')  # Jangan force_reload untuk efisiensi
+model.to(device)
+model.eval()
+
+# Buka kamera
+cap = cv2.VideoCapture(0)
+
+# Ukuran frame yang lebih kecil untuk inferensi lebih cepat
+TARGET_SIZE = (320, 320)
+
+# Inisialisasi FPS
+prev_time = time.time()
+frame_count = 0
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Resize frame untuk inferensi cepat
+    frame_resized = cv2.resize(frame, TARGET_SIZE)
+    frame_rgb = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2RGB)
+
+    # Inference
+    with torch.no_grad():
+        results = model(frame_rgb, size=320)  # Pastikan ukuran sesuai TARGET_SIZE
+
+    # Render hasil deteksi
+    results.render()
+
+    # Hitung FPS
+    frame_count += 1
+    current_time = time.time()
+    fps = frame_count / (current_time - prev_time)
+
+    # Tampilkan FPS
+    output_frame = results.ims[0]
+    cv2.putText(output_frame, f"FPS: {fps:.2f} | CPU", (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+
+    # Tampilkan frame
+    cv2.imshow('YOLOv5-Lite Live (RasPi)', output_frame)
+
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 

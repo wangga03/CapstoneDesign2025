@@ -1,0 +1,12 @@
+YOLOv5n1 summary: 213 layers, 1867405 parameters, 0 gradients
+Adding AutoShape... 
+/home/cd/yolov5/models/common.py:906: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with amp.autocast(autocast):
+Traceback (most recent call last):
+  File "/home/cd/CapstoneDesign2025/Program/testttt.py", line 38, in <module>
+    cv2.putText(output_frame, f"FPS: {fps:.2f}", (10, 30), 
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+cv2.error: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'putText'
+> Overload resolution failed:
+>  - img marked as output argument, but provided NumPy array marked as readonly
+>  - Expected Ptr<cv::UMat> for argument 'img'

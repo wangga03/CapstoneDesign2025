@@ -1,0 +1,79 @@
+#include "main.h"
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+
+UART_HandleTypeDef huart1;
+
+#define RX_BUFFER_SIZE 64
+
+char rx_data;                    // Data per byte
+char rx_line[RX_BUFFER_SIZE];    // Buffer baris
+uint8_t rx_index = 0;
+
+int objek_x = 0, objek_y = 0;    // Hasil koordinat terakhir
+
+
+Inisialisasi UART
+
+HAL_UART_Receive_IT(&huart1, (uint8_t*)&rx_data, 1);
+
+Callback interrupt UART
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart->Instance == USART1) {
+        if (rx_data == '\n') {
+            rx_line[rx_index] = '\0';  // Null-terminate string
+
+            if (rx_line[0] == '#') {
+                int x = 0, y = 0;
+                if (sscanf(rx_line + 1, "%d,%d", &x, &y) == 2) {
+                    objek_x = x;
+                    objek_y = y;
+
+                    // Debug (misalnya kirim balik ke serial)
+                    char debug[64];
+                    sprintf(debug, "Koordinat: x=%d, y=%d\r\n", objek_x, objek_y);
+                    HAL_UART_Transmit(&huart1, (uint8_t*)debug, strlen(debug), 100);
+                }
+            }
+
+            rx_index = 0;  // Reset untuk baris baru
+            memset(rx_line, 0, RX_BUFFER_SIZE);
+        } else {
+            if (rx_index < RX_BUFFER_SIZE - 1) {
+                rx_line[rx_index++] = rx_data;
+            } else {
+                // Overflow, reset
+                rx_index = 0;
+                memset(rx_line, 0, RX_BUFFER_SIZE);
+            }
+        }
+
+        // Terima byte berikutnya
+        HAL_UART_Receive_IT(&huart1, (uint8_t*)&rx_data, 1);
+    }
+}
+
+
+✅ Ringkasan Alur
+
+    Pi mengirim #x,y\n → STM32 terima byte per byte.
+
+    Jika byte \n diterima → baris dianggap selesai.
+
+    Parse koordinat jika diawali # → hasil disimpan ke objek_x, objek_y.
+
+    Data bisa langsung dipakai di main loop atau untuk kontrol aktuator.
+    
+    
+    
+    
+    
+Untuk mengirim dan menerima
+
+void kirim_status(const char *status) {
+    char msg[64];
+    snprintf(msg, sizeof(msg), "$%s\n", status);  // Gunakan prefix $ agar mudah dikenali Pi
+    HAL_UART_Transmit(&huart1, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+}
