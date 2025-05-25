@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:robot_control/main.dart'; // Benar, karena class ada di sini
+import 'package:robot_control/main.dart';
 
 void main() {
+  final _ = Colors.transparent; // ← ini pakai 1 properti dari material.dart
+
   testWidgets('Robot controller UI test', (WidgetTester tester) async {
     await tester.pumpWidget(RobotControllerApp());
 
-    // Verifikasi tombol-tombol ada di tampilan
     expect(find.text('Maju'), findsOneWidget);
     expect(find.text('Mundur'), findsOneWidget);
   });
