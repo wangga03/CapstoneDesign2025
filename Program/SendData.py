@@ -19,5 +19,5 @@ def baca_data_struct(port):
             print("Data tidak lengkap")
 
 # Contoh penggunaan
-# kirim_data_struct('COM4', 123, 45.67, 1)
+kirim_data_struct('dev/ttyUSB0', 123, 45.67, 1)
 # baca_data_struct('COM4')
