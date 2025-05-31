@@ -8,12 +8,12 @@ print(f"Using device: {device}")
 
 # Load YOLOv5 Nano
 model = torch.hub.load('/home/cd/yolov5', 'custom', 
-                       path='/home/cd/CapstoneDesign2025/Program/yolov5n.pt', source='local')
+                       path='/home/wgg/capstone_design/Program/yolov5n.pt', source='local')
 model.to(device)
 model.eval()
 
 # Buka kamera
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture('rtsp://192.168.1.41:8554/unicast')
 TARGET_SIZE = (100, 100)
 
 prev_time = time.time()
