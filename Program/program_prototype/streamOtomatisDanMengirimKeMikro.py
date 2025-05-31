@@ -55,6 +55,7 @@ def start_socket_and_serial_server():
 
                                 # Format pengiriman ke mikrokontroler
                                 message = f"{cls}:{box[0]},{box[1]},{box[2]},{box[3]},{conf}\n"
+                                message = f"A{cls}B{int(box[0])}C{int(box[1])}D{int(box[2])}E{int(box[3])}\n"
                                 ser.write(message.encode('utf-8'))
 
                         # Jika data deteksi berupa dict (single object)
@@ -66,6 +67,8 @@ def start_socket_and_serial_server():
                             print(f"Class: {cls}, BBox: {box}, Confidence: {conf}")
 
                             message = f"{cls}:{box[0]},{box[1]},{box[2]},{box[3]},{conf}\n"
+                            message = f"A{cls}B{int(box[0])}C{int(box[1])}D{int(box[2])}E{int(box[3])}\n"
+                            print(message)
                             ser.write(message.encode('utf-8'))
 
                         else:

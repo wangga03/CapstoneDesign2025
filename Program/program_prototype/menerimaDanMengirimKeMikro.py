@@ -3,7 +3,7 @@ import json
 import serial
 
 # Setup koneksi serial ke mikrokontroler
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)  # Ganti port & baudrate sesuai kebutuhan
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)  # Ganti port & baudrate sesuai kebutuhan
 
 raspi_ip = '0.0.0.0'
 raspi_port = 12345
