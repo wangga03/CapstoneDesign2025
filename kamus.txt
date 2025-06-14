@@ -1,0 +1,58 @@
+crontab -e
+kemudian pilih 1
+
+dan copy : @reboot python3 /home/pi/serial_listener.py
+buat streaming kamera
+masuk ke direktori : ~/v4l2rtspserver/build 
+kemudian run /v4l2rtspserver /dev/video0
+
+
+atau bisa langsung run:
+~/v4l2rtspserver/build/./v4l2rtspserver /dev/video0
+
+
+
+UNTUK MENGHUBUNGKAN WIFI LEWAT TERMINAL
+$nmcli device wifi list #untuk menampilkan list wifi yang tersedia
+$nmcli device wifi connect "SSID_Wifi"
+$password "Wifi Password"
+Untuk Scan Ulang
+$sudo nmcli device wifi rescan
+
+
+UNTUK MENJALANKAN PROGRAM SECARA OTOMATIS
+
+1. Buat file 
+	sudo nano /etc/systemd/system/mainprogram.service
+2.copy program
+
+[Unit]
+Description=Main Program Service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/CapstoneDesign2025/Program/program_prototype/mainProgram.py
+WorkingDirectory=/home/pi/CapstoneDesign2025/Program/program_prototype
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
+3. Reload sistem
+	sudo systemctl daemon-reload
+4. Enable dan start
+	sudo systemctl enable mainprogram.service
+	sudo systemctl start mainprogram.service
+	
+5. Cek status
+	sudo systemctl status mainprogram.service
+6. Jika error cek log detail
+	journalctl -u mainprogram.service -b
+
+7. Cara menonaktifkan
+	sudo systemctl disable programku.service
+8. Cara menghentikan service
+	sudo systemctl stop programku.service
